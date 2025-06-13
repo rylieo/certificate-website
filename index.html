@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Koleksi Foto Sertifikat Saya</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --primary: #4a90e2;
+        --secondary: #f5f5f5;
+        --accent: #50e3c2;
+        --bg: #ffffff;
+        --text-color: #333;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        --radius: 10px;
+      }
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: var(--bg);
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      h1 {
+        color: var(--primary);
+        margin: 40px 0;
+        font-size: 2.5em;
+        text-align: center;
+      }
+      .upload-form {
+        margin-bottom: 20px;
+        width: 90%;
+        max-width: 600px;
+      }
+      .upload-form input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--primary);
+        border-radius: var(--radius);
+        font-size: 1em;
+        transition: border-color 0.3s;
+      }
+      .upload-form input[type="file"]:hover {
+        border-color: var(--accent);
+      }
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin: 20px 0;
+        width: 90%;
+        max-width: 1200px;
+      }
+      .card {
+        background: var(--secondary);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        width: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-bottom: 2px solid var(--primary);
+      }
+      .desc-text {
+        padding: 10px;
+        text-align: center;
+        font-size: 0.9em;
+        color: var(--text-color);
+      }
+      .desc-input {
+        width: 90%;
+        margin: 10px 0;
+        padding: 8px;
+        border: 1px solid var(--primary);
+        border-radius: var(--radius);
+        font-size: 0.9em;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      .desc-input:focus {
+        border-color: var(--accent);
+      }
+      .save-btn {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background 0.3s;
+      }
+      .save-btn:hover {
+        background: var(--accent);
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal.active {
+        display: flex;
+      }
+      .modal img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: var(--radius);
+      }
+      .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 2em;
+        color: #fff;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .modal-close:hover {
+        color: var(--accent);
+      }
+      @media (max-width: 900px) {
+        .gallery {
+          max-width: 100%;
+          gap: 14px;
+        }
+        .card {
+          width: 45%;
+          min-width: 180px;
+        }
+      }
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2em;
+        }
+        .gallery {
+          flex-direction: column;
+          gap: 12px;
+          align-items: center;
+        }
+        .card {
+          width: 100%;
+          min-width: unset;
+        }
+        .upload-form {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Koleksi Foto Sertifikat Saya</h1>
+    <div class="gallery" id="gallery"></div>
+    <div class="modal" id="imgModal">
+      <button class="modal-close" id="closeModal" title="Tutup">&times;</button>
+      <img id="modalImg" src="" alt="Sertifikat" />
+    </div>
+    <script>
+      // Daftar gambar manual, tambahkan nama file sesuai isi folder image/
+      const images = [
+        { src: "image/image1.jpg", desc: "Sertifikat 1" },
+        { src: "image/image1.jpg", desc: "Sertifikat 1" },
+        // Tambahkan baris berikut sesuai file yang Anda upload manual
+        // { src: "image/namafile.jpg", desc: "Deskripsi" },
+      ];
+
+      const gallery = document.getElementById("gallery");
+      const imgModal = document.getElementById("imgModal");
+      const modalImg = document.getElementById("modalImg");
+      const closeModal = document.getElementById("closeModal");
+
+      function renderGallery() {
+        gallery.innerHTML = "";
+        images.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const img = document.createElement("img");
+          img.src = item.src;
+          img.alt = "Sertifikat";
+          img.onclick = function () {
+            modalImg.src = item.src;
+            imgModal.classList.add("active");
+          };
+
+          const descText = document.createElement("div");
+          descText.className = "desc-text";
+          descText.textContent = item.desc;
+
+          card.appendChild(img);
+          card.appendChild(descText);
+          gallery.appendChild(card);
+        });
+      }
+
+      imgModal.addEventListener("click", function (e) {
+        if (e.target === imgModal) {
+          imgModal.classList.remove("active");
+          modalImg.src = "";
+        }
+      });
+      closeModal.addEventListener("click", function () {
+        imgModal.classList.remove("active");
+        modalImg.src = "";
+      });
+
+      renderGallery();
+    </script>
+  </body>
+</html>
